@@ -8,7 +8,9 @@ import loginService from './services/login'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('') 
-  const [newBlog, setNewBlog] = useState('')
+  const [newTitle, setNewTitle] = useState('')
+  const [newAuthor, setNewAuthor] = useState('')
+  const [newUrl, setNewUrl] = useState('')
   const [password, setPassword] = useState('') 
   const [errorMessage, setErrorMessage] = useState(null)
   const [user, setUser] = useState(null)
@@ -81,29 +83,58 @@ const App = () => {
   const addBlog = (event) => {
     event.preventDefault()
     const blogObject = {
-      content: newBlog,
-      important: Math.random() > 0.5,
+      title: newTitle,
+      author: newAuthor,
+      url: newUrl
     }
 
     blogService
       .create(blogObject)
         .then(returnedBlog => {
         setBlogs(blogs.concat(returnedBlog))
-        setNewBlog('')
+        setNewTitle('')
+        setNewAuthor('')
+        setNewUrl('')
       })
   }
 
-  const handleBlogChange = (event) => {
-    setNewBlog(event.target.value)
+  const handleTitleChange = (event) => {
+    setNewTitle(event.target.value)
+  }
+  const handleAuthorChange = (event) => {
+    setNewAuthor(event.target.value)
+  }
+  const handleUrlChange = (event) => {
+    setNewUrl(event.target.value)
   }
 
   const blogForm = () => (
-    <form onSubmit={addBlog}>
+    <form style={{display: "flex", flexDirection: "column", width: "20%", gap:"20px"}} onSubmit={addBlog}>
+      <div style={{display: "flex", justifyContent: "space-between"}}>
+      <label name='title'>title:</label>
       <input
-        value={newBlog}
-        onChange={handleBlogChange}
+        id='title'
+        value={newTitle}
+        onChange={handleTitleChange}
       />
-      <button type="submit">save</button>
+      </div>
+      <div style={{display: "flex", justifyContent: "space-between"}}>
+      <label name='author'>author:</label>
+      <input
+        id='author'
+        value={newAuthor}
+        onChange={handleAuthorChange}
+      />
+      </div>
+      <div style={{display: "flex", justifyContent: "space-between"}}>
+      <label name='url'>url:</label>
+      <input
+      id='url'
+      value={newUrl}
+      onChange={handleUrlChange}
+      />
+      </div>
+      <button style={{width:"40%", marginTop: "20px"}} type="submit">create</button>
     </form>  
   )
 
