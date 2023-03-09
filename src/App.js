@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
+import NotificationRed from './components/NotificationRed'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -13,6 +14,7 @@ const App = () => {
   const [newUrl, setNewUrl] = useState('')
   const [password, setPassword] = useState('') 
   const [errorMessage, setErrorMessage] = useState(null)
+  const [errorMessageRed, setErrorMessageRed] = useState(null)
   const [user, setUser] = useState(null)
 
   useEffect(() => {
@@ -44,10 +46,13 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-    } catch (exception) {
-      setErrorMessage('Wrong credentials')
+    } catch (error) {
+      if (error.response.status === 500) {
+        console.log(error.response.status)
+        setErrorMessageRed('wrong username or password')
+      } 
       setTimeout(() => {
-        setErrorMessage(null)
+        setErrorMessageRed(null)
       }, 5000)
     }
   }
@@ -95,6 +100,10 @@ const App = () => {
         setNewTitle('')
         setNewAuthor('')
         setNewUrl('')
+        setErrorMessage(`a new blog ${blogObject.title} by ${blogObject.author} was added`);
+            setTimeout(() => {
+              setErrorMessage(null);
+            }, 5000);
       })
   }
 
@@ -142,6 +151,7 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
+        <NotificationRed message={errorMessageRed} />
         {loginForm()}
       </div>
     )

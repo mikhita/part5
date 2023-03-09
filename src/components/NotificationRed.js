@@ -1,11 +1,11 @@
-const Notification = ({ message }) => {
+const NotificationRed = ({ message }) => {
   const errorMessageStyle = {
-    color: "green",
+    color: "red",
     fontStyle: "bold",
     fontSize: 26,
     padding: 10,
     backgroundColor: "#D3D3D3",
-    border: "2px solid green",
+    border: "2px solid red",
     width: "70%",
   };
   
@@ -20,4 +20,4 @@ const Notification = ({ message }) => {
   );
 };
 
-export default Notification;
+export default NotificationRed;
