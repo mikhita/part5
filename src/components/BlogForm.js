@@ -1,6 +1,46 @@
-const BlogForm = ({ addBlog, handleTitleChange, handleAuthorChange, handleUrlChange, newTitle, newAuthor, newUrl}) => {
+import { useState } from 'react'
+import blogService from '../services/blogs'
+import Notification from './Notification'
+
+const BlogForm = ({blogs, setBlogs}) => {
+  const [newTitle, setNewTitle] = useState('')
+  const [newAuthor, setNewAuthor] = useState('')
+  const [newUrl, setNewUrl] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
+  const handleTitleChange = (value) => {
+    setNewTitle(value)
+  }
+  const handleAuthorChange = (value) => {
+    setNewAuthor(value)
+  }
+  const handleUrlChange = (value) => {
+    setNewUrl(value)
+  }
+
+  const addBlog = (event) => {
+    event.preventDefault()
+    const blogObject = {
+      title: newTitle,
+      author: newAuthor,
+      url: newUrl
+    }
+
+    blogService
+      .create(blogObject)
+        .then(returnedBlog => {
+        setBlogs(blogs.concat(returnedBlog))
+        setNewTitle('')
+        setNewAuthor('')
+        setNewUrl('')
+        setErrorMessage(`a new blog ${blogObject.title} by ${blogObject.author} was added`);
+            setTimeout(() => {
+              setErrorMessage(null);
+            }, 5000);
+      })
+  }
   return (
     <div>
+      <Notification message={errorMessage} />
       <h2>Create a new blog</h2>
 
       <form style={{display: "flex", flexDirection: "column", width: "20%", gap:"20px"}} onSubmit={addBlog}>
@@ -8,7 +48,7 @@ const BlogForm = ({ addBlog, handleTitleChange, handleAuthorChange, handleUrlCha
       <label name='title'>title:</label>
       <input
         id='title'
-        defaultValue={newTitle}
+        value={newTitle}
         onChange={(event) => handleTitleChange(event.target.value)}
       />
       </div>
@@ -16,7 +56,7 @@ const BlogForm = ({ addBlog, handleTitleChange, handleAuthorChange, handleUrlCha
       <label name='author'>author:</label>
       <input
         id='author'
-        defaultValue={newAuthor}
+        value={newAuthor}
         onChange={(event) => handleAuthorChange(event.target.value)}
       />
       </div>
@@ -24,7 +64,7 @@ const BlogForm = ({ addBlog, handleTitleChange, handleAuthorChange, handleUrlCha
       <label name='url'>url:</label>
       <input
       id='url'
-      defaultValue={newUrl}
+      value={newUrl}
       onChange={(event) => handleUrlChange(event.target.value)}
       />
       </div>

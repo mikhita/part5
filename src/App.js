@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
-import Notification from './components/Notification'
 import NotificationRed from './components/NotificationRed'
 import Togglable from './components/Toggleable'
 import blogService from './services/blogs'
@@ -12,14 +11,14 @@ import loginService from './services/login'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('') 
-  const [newTitle, setNewTitle] = useState('')
-  const [newAuthor, setNewAuthor] = useState('')
-  const [newUrl, setNewUrl] = useState('')
+  // const [newTitle, setNewTitle] = useState('')
+  // const [newAuthor, setNewAuthor] = useState('')
+  // const [newUrl, setNewUrl] = useState('')
   const [password, setPassword] = useState('') 
-  const [errorMessage, setErrorMessage] = useState(null)
+  // const [errorMessage, setErrorMessage] = useState(null)
   const [errorMessageRed, setErrorMessageRed] = useState(null)
   const [user, setUser] = useState(null)
-  const [loginVisible, setLoginVisible] = useState(false)
+  // const [loginVisible, setLoginVisible] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -81,37 +80,37 @@ const App = () => {
   //     </div>
   //   )
   // }
-  const addBlog = (event) => {
-    event.preventDefault()
-    const blogObject = {
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl
-    }
+  // const addBlog = (event) => {
+  //   event.preventDefault()
+  //   const blogObject = {
+  //     title: newTitle,
+  //     author: newAuthor,
+  //     url: newUrl
+  //   }
 
-    blogService
-      .create(blogObject)
-        .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
-        setNewTitle('')
-        setNewAuthor('')
-        setNewUrl('')
-        setErrorMessage(`a new blog ${blogObject.title} by ${blogObject.author} was added`);
-            setTimeout(() => {
-              setErrorMessage(null);
-            }, 5000);
-      })
-  }
+  //   blogService
+  //     .create(blogObject)
+  //       .then(returnedBlog => {
+  //       setBlogs(blogs.concat(returnedBlog))
+  //       setNewTitle('')
+  //       setNewAuthor('')
+  //       setNewUrl('')
+  //       setErrorMessage(`a new blog ${blogObject.title} by ${blogObject.author} was added`);
+  //           setTimeout(() => {
+  //             setErrorMessage(null);
+  //           }, 5000);
+  //     })
+  // }
 
-  const handleTitleChange = (value) => {
-    setNewTitle(value)
-  }
-  const handleAuthorChange = (value) => {
-    setNewAuthor(value)
-  }
-  const handleUrlChange = (value) => {
-    setNewUrl(value)
-  }
+  // const handleTitleChange = (value) => {
+  //   setNewTitle(value)
+  // }
+  // const handleAuthorChange = (value) => {
+  //   setNewAuthor(value)
+  // }
+  // const handleUrlChange = (value) => {
+  //   setNewUrl(value)
+  // }
 
   // const blogForm = () => (
   //   <form style={{display: "flex", flexDirection: "column", width: "20%", gap:"20px"}} onSubmit={addBlog}>
@@ -164,25 +163,19 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification message={errorMessage} />
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
-    {user && <div>
-       <p>{user.name} logged in<button onClick={handleLogout}>logout</button></p>
-       <Togglable buttonLabel="new blog">
-       <BlogForm
-        addBlog={addBlog}
-        handleTitleChange={handleTitleChange}
-        handleAuthorChange={handleAuthorChange}
-        handleUrlChange={handleUrlChange}
-        newTitle={newTitle}
-        newAuthor={newAuthor}
-        newUrl={newUrl}
-      />
-</Togglable>
-      </div>
-    }
+      {user && <div>
+      <p>{user.name} logged in<button onClick={handleLogout}>logout</button></p>
+      <Togglable buttonLabel="new blog">
+          <BlogForm
+            blogs={blogs}
+            setBlogs={setBlogs}
+          />
+      </Togglable>
+        </div>
+      }
 
     </div>
   )
