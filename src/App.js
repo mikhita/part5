@@ -2,23 +2,15 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
-import NotificationRed from './components/NotificationRed'
 import Togglable from './components/Toggleable'
 import blogService from './services/blogs'
-import loginService from './services/login'
+// import loginService from './services/login'
 
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('') 
-  // const [newTitle, setNewTitle] = useState('')
-  // const [newAuthor, setNewAuthor] = useState('')
-  // const [newUrl, setNewUrl] = useState('')
-  const [password, setPassword] = useState('') 
-  // const [errorMessage, setErrorMessage] = useState(null)
   const [errorMessageRed, setErrorMessageRed] = useState(null)
   const [user, setUser] = useState(null)
-  // const [loginVisible, setLoginVisible] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -35,30 +27,30 @@ const App = () => {
     }
   }, [])
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
+  // const handleLogin = async (event) => {
+  //   event.preventDefault()
     
-    try {
-      const user = await loginService.login({
-        username, password,
-      })
-      window.localStorage.setItem(
-        'loggedBlogappUser', JSON.stringify(user)
-      )
-      blogService.setToken(user.token)
-      setUser(user)
-      setUsername('')
-      setPassword('')
-    } catch (error) {
-      if (error.response.status === 500) {
-        console.log(error.response.status)
-        setErrorMessageRed('wrong username or password')
-      } 
-      setTimeout(() => {
-        setErrorMessageRed(null)
-      }, 5000)
-    }
-  }
+  //   try {
+  //     const user = await loginService.login({
+  //       username, password,
+  //     })
+  //     window.localStorage.setItem(
+  //       'loggedBlogappUser', JSON.stringify(user)
+  //     )
+  //     blogService.setToken(user.token)
+  //     setUser(user)
+  //     setUsername('')
+  //     setPassword('')
+  //   } catch (error) {
+  //     if (error.response.status === 500) {
+  //       console.log(error.response.status)
+  //       setErrorMessageRed('wrong username or password')
+  //     } 
+  //     setTimeout(() => {
+  //       setErrorMessageRed(null)
+  //     }, 5000)
+  //   }
+  // }
   const handleLogout = async (event) => {
     event.preventDefault()
     window.localStorage.removeItem('loggedBlogappUser')
@@ -146,14 +138,11 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
-        <NotificationRed message={errorMessageRed} />
         <Togglable buttonLabel="log in">
           <LoginForm
-            username={username}
-            password={password}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target }) => setPassword(target.value)}
-            handleSubmit={handleLogin}
+            errorMessageRed={errorMessageRed}
+            setErrorMessageRed={setErrorMessageRed}
+            setUser={setUser}
           />
         </Togglable>
       </div>
