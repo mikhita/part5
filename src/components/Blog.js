@@ -29,6 +29,9 @@ import React, {useState} from 'react'
       <div style={blogStyle}>
         {blog.likes} <button>like</button>
       </div>
+      <div style={blogStyle}>
+        {blog.user.username} {blog.user.name} 
+      </div>
       </div>
     </div>
   )}
