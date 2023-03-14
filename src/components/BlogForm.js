@@ -7,6 +7,7 @@ const BlogForm = ({blogs, setBlogs}) => {
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
+  const [newLikes, setNewLikes] = useState(0)
   const [errorMessage, setErrorMessage] = useState(null)
   const handleTitleChange = (value) => {
     setNewTitle(value)
@@ -17,6 +18,9 @@ const BlogForm = ({blogs, setBlogs}) => {
   const handleUrlChange = (value) => {
     setNewUrl(value)
   }
+  const handleLikesChange = (value) => {
+    setNewLikes(value)
+  }
   const blogFormRef = useRef()
 
 
@@ -26,7 +30,8 @@ const BlogForm = ({blogs, setBlogs}) => {
     const blogObject = {
       title: newTitle,
       author: newAuthor,
-      url: newUrl
+      url: newUrl,
+      likes: newLikes
     }
 
     blogService
