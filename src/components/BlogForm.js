@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import blogService from '../services/blogs'
 import Notification from './Notification'
+import Togglable from './Toggleable'
 
 const BlogForm = ({blogs, setBlogs}) => {
   const [newTitle, setNewTitle] = useState('')
@@ -16,9 +17,12 @@ const BlogForm = ({blogs, setBlogs}) => {
   const handleUrlChange = (value) => {
     setNewUrl(value)
   }
+  const blogFormRef = useRef()
+
 
   const addBlog = (event) => {
     event.preventDefault()
+    blogFormRef.current.toggleVisibility()
     const blogObject = {
       title: newTitle,
       author: newAuthor,
@@ -39,6 +43,7 @@ const BlogForm = ({blogs, setBlogs}) => {
       })
   }
   return (
+    <Togglable buttonLabel="new blog" ref={blogFormRef}>
     <div>
       <Notification message={errorMessage} />
       <h2>Create a new blog</h2>
@@ -72,6 +77,7 @@ const BlogForm = ({blogs, setBlogs}) => {
         
     </form>
     </div>
+    </Togglable>
   )
 }
 
