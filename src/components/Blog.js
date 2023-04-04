@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
-  const Blog = ({ blog }) => {
+import blogService from '../services/blogs'
+  const Blog = ({ blog , blogs, setBlogs, likes, user}) => {
     const [visible, setVisible] = useState(true)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
@@ -9,6 +10,32 @@ import React, {useState} from 'react'
   const makeVisibilityTrue = () => {
     setVisible(false)
   }
+  
+  const updateBlog = () => {
+    const updatedBlog = { ...blog, likes: blog.likes + 1 };
+    console.log(updatedBlog);
+    blogService
+      .update(blog.id, updatedBlog, { populate: true })
+      .then((returnedBlog) => {
+        console.log('Returned blog:', returnedBlog);
+        if (blogs) {
+          setBlogs(
+            blogs.map((blog) =>
+              blog.id !== returnedBlog.id ? blog : returnedBlog
+            )
+          );
+        }
+      })
+      .catch((error) => {
+        console.log('Error updating blog:', error);
+      });
+  };
+  
+  
+  
+  
+  
+  
     const blogStyle = {
       paddingTop: 10,
       paddingLeft: 2,
@@ -27,11 +54,13 @@ import React, {useState} from 'react'
         {blog.url} <button onClick={toggleVisibility}>hide</button>
       </div>
       <div style={blogStyle}>
-        {blog.likes} <button>like</button>
+        {blog.likes} <button onClick={updateBlog}>like</button>
       </div>
-      <div style={blogStyle}>
-        {blog.user.username} {blog.user.name} 
-      </div>
+      {blog.user && (
+        <div style={blogStyle}>
+          {blog.user.username} {blog.user.name} 
+        </div>
+      )}
       </div>
     </div>
   )}
