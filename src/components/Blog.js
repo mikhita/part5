@@ -1,17 +1,19 @@
-import React, {useState} from 'react'
-import blogService from '../services/blogs'
-  const Blog = ({ blog , blogs, setBlogs, likes, user}) => {
-    const [visible, setVisible] = useState(true)
+import React, { useState } from 'react';
+import blogService from '../services/blogs';
 
-  const hideWhenVisible = { display: visible ? 'none' : '' }
+const Blog = ({ blog, blogs, setBlogs, likes, user, removeBlog }) => {
+  const [visible, setVisible] = useState(true);
+
+  const hideWhenVisible = { display: visible ? 'none' : '' };
   const toggleVisibility = () => {
-    setVisible(!visible)
-  }
+    setVisible(!visible);
+  };
   const makeVisibilityTrue = () => {
-    setVisible(false)
-  }
-  
+    setVisible(false);
+  };
+
   const updateBlog = () => {
+    console.log('Sending request to:', window.location.href + '/api/blogs/' + blog.id);
     const updatedBlog = { ...blog, likes: blog.likes + 1 };
     console.log(updatedBlog);
     blogService
@@ -30,38 +32,57 @@ import blogService from '../services/blogs'
         console.log('Error updating blog:', error);
       });
   };
-  
-  
-  
-  
-  
-  
-    const blogStyle = {
-      paddingTop: 10,
-      paddingLeft: 2,
-      border: 'solid',
-      borderWidth: 1,
-      marginBottom: 5
+
+  const handleRemove = async () => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      try {
+        await blogService.remove(blog.id);
+        setBlogs(blogs.filter((b) => b.id !== blog.id));
+      } catch (error) {
+        console.log('Error removing blog:', error);
+      }
     }
-  
-    return (
-      <div style={blogStyle}>
-        <div>
-          {blog.title} {blog.author} <button onClick={makeVisibilityTrue}>view</button>
-        </div>
-        <div style={hideWhenVisible}>
-        <div style={blogStyle}>
-        {blog.url} <button onClick={toggleVisibility}>hide</button>
+  };
+
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5,
+  };
+  const buttonStyleRemove = {
+    background: 'blue',
+    color: 'white',
+  };
+
+  return (
+    <div style={blogStyle}>
+      <div>
+        {blog.title} {blog.author} <button onClick={makeVisibilityTrue}>view</button>
       </div>
-      <div style={blogStyle}>
-        {blog.likes} <button onClick={updateBlog}>like</button>
-      </div>
-      {blog.user && (
+      <div style={hideWhenVisible}>
         <div style={blogStyle}>
-          {blog.user.username} {blog.user.name} 
+          {blog.url} <button onClick={toggleVisibility}>hide</button>
         </div>
-      )}
+        <div style={blogStyle}>
+          {blog.likes} <button onClick={updateBlog}>like</button>
+        </div>
+        {blog.user && (
+          <div>
+            <div style={blogStyle}>
+              {blog.user.username} {blog.user.name}
+            </div>
+            {user && user.username === blog.user.username && (
+              <button style={buttonStyleRemove} onClick={handleRemove}>
+                remove
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </div>
-  )}
-export default Blog
+  );
+};
+
+export default Blog;

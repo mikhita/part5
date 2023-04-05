@@ -49,7 +49,7 @@ const App = () => {
       </div>
     )
   }
-  const sortedByLikes = [...blogs].sort((a, b) => a.likes - b.likes)
+  const sortedByLikes = [...blogs].sort((b, a) => a.likes - b.likes)
         console.log(sortedByLikes);
 
   return (
