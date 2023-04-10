@@ -3,11 +3,11 @@ import blogService from '../services/blogs'
 import Notification from './Notification'
 import Togglable from './Toggleable'
 
-const BlogForm = ({blogs, setBlogs}) => {
+const BlogForm = ({ blogs, setBlogs }) => {
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
-  const [newLikes, setNewLikes] = useState(0)
+  // const [newLikes, setNewLikes] = useState(0)
   const [errorMessage, setErrorMessage] = useState(null)
   const handleTitleChange = (value) => {
     setNewTitle(value)
@@ -18,9 +18,9 @@ const BlogForm = ({blogs, setBlogs}) => {
   const handleUrlChange = (value) => {
     setNewUrl(value)
   }
-  const handleLikesChange = (value) => {
-    setNewLikes(value)
-  }
+  // const handleLikesChange = (value) => {
+  //   setNewLikes(value)
+  // }
   const blogFormRef = useRef()
 
 
@@ -31,57 +31,56 @@ const BlogForm = ({blogs, setBlogs}) => {
       title: newTitle,
       author: newAuthor,
       url: newUrl,
-      likes: newLikes
+      // likes: newLikes
     }
 
     blogService
       .create(blogObject)
-        .then(returnedBlog => {
+      .then(returnedBlog => {
         setBlogs(blogs.concat(returnedBlog))
         setNewTitle('')
         setNewAuthor('')
         setNewUrl('')
-        setErrorMessage(`a new blog ${blogObject.title} by ${blogObject.author} was added`);
-            setTimeout(() => {
-              setErrorMessage(null);
-            }, 5000);
+        setErrorMessage(`a new blog ${blogObject.title} by ${blogObject.author} was added`)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
       })
   }
   return (
-    <Togglable buttonLabel="new blog" ref={blogFormRef}>
-    <div>
-      <Notification message={errorMessage} />
-      <h2>Create a new blog</h2>
+    <Togglable buttonLabel='new blog' ref={blogFormRef}>
+      <div>
+        <Notification message={errorMessage} />
+        <h2>Create a new blog</h2>
 
-      <form style={{display: "flex", flexDirection: "column", width: "20%", gap:"20px"}} onSubmit={addBlog}>
-      <div style={{display: "flex", justifyContent: "space-between"}}>
-      <label name='title'>title:</label>
-      <input
-        id='title'
-        value={newTitle}
-        onChange={(event) => handleTitleChange(event.target.value)}
-      />
+        <form style={{ display: 'flex', flexDirection: 'column', width: '20%', gap:'20px' }} onSubmit={addBlog}>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <label name='title'>title:</label>
+            <input
+              id='title'
+              value={newTitle}
+              onChange={(event) => handleTitleChange(event.target.value)}
+            />
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <label name='author'>author:</label>
+            <input
+              id='author'
+              value={newAuthor}
+              onChange={(event) => handleAuthorChange(event.target.value)}
+            />
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <label name='url'>url:</label>
+            <input
+              id='url'
+              value={newUrl}
+              onChange={(event) => handleUrlChange(event.target.value)}
+            />
+          </div>
+          <button style={{ width:'40%', marginTop: '20px' }} type='submit'>create</button>
+        </form>
       </div>
-      <div style={{display: "flex", justifyContent: "space-between"}}>
-      <label name='author'>author:</label>
-      <input
-        id='author'
-        value={newAuthor}
-        onChange={(event) => handleAuthorChange(event.target.value)}
-      />
-      </div>
-      <div style={{display: "flex", justifyContent: "space-between"}}>
-      <label name='url'>url:</label>
-      <input
-      id='url'
-      value={newUrl}
-      onChange={(event) => handleUrlChange(event.target.value)}
-      />
-      </div>
-    <button style={{width:"40%", marginTop: "20px"}} type="submit">create</button>
-        
-    </form>
-    </div>
     </Togglable>
   )
 }

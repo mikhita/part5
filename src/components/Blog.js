@@ -1,48 +1,48 @@
-import React, { useState } from 'react';
-import blogService from '../services/blogs';
+import React, { useState } from 'react'
+import blogService from '../services/blogs'
 
-const Blog = ({ blog, blogs, setBlogs, likes, user, removeBlog }) => {
-  const [visible, setVisible] = useState(true);
+const Blog = ({ blog, blogs, setBlogs, user }) => {
+  const [visible, setVisible] = useState(true)
 
-  const hideWhenVisible = { display: visible ? 'none' : '' };
+  const hideWhenVisible = { display: visible ? 'none' : '' }
   const toggleVisibility = () => {
-    setVisible(!visible);
-  };
+    setVisible(!visible)
+  }
   const makeVisibilityTrue = () => {
-    setVisible(false);
-  };
+    setVisible(false)
+  }
 
   const updateBlog = () => {
-    console.log('Sending request to:', window.location.href + '/api/blogs/' + blog.id);
-    const updatedBlog = { ...blog, likes: blog.likes + 1 };
-    console.log(updatedBlog);
+    console.log('Sending request to:', window.location.href + '/api/blogs/' + blog.id)
+    const updatedBlog = { ...blog, likes: blog.likes + 1 }
+    console.log(updatedBlog)
     blogService
       .update(blog.id, updatedBlog, { populate: true })
       .then((returnedBlog) => {
-        console.log('Returned blog:', returnedBlog);
+        console.log('Returned blog:', returnedBlog)
         if (blogs) {
           setBlogs(
             blogs.map((blog) =>
               blog.id !== returnedBlog.id ? blog : returnedBlog
             )
-          );
+          )
         }
       })
       .catch((error) => {
-        console.log('Error updating blog:', error);
-      });
-  };
+        console.log('Error updating blog:', error)
+      })
+  }
 
   const handleRemove = async () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
       try {
-        await blogService.remove(blog.id);
-        setBlogs(blogs.filter((b) => b.id !== blog.id));
+        await blogService.remove(blog.id)
+        setBlogs(blogs.filter((b) => b.id !== blog.id))
       } catch (error) {
-        console.log('Error removing blog:', error);
+        console.log('Error removing blog:', error)
       }
     }
-  };
+  }
 
   const blogStyle = {
     paddingTop: 10,
@@ -50,39 +50,41 @@ const Blog = ({ blog, blogs, setBlogs, likes, user, removeBlog }) => {
     border: 'solid',
     borderWidth: 1,
     marginBottom: 5,
-  };
+  }
   const buttonStyleRemove = {
     background: 'blue',
     color: 'white',
-  };
+  }
 
   return (
-    <div style={blogStyle}>
-      <div>
-        {blog.title} {blog.author} <button onClick={makeVisibilityTrue}>view</button>
-      </div>
-      <div style={hideWhenVisible}>
-        <div style={blogStyle}>
-          {blog.url} <button onClick={toggleVisibility}>hide</button>
+    <li className='blog'>
+      <div style={blogStyle}>
+        <div>
+          {blog.title} {blog.author} <button onClick={makeVisibilityTrue}>view</button>
         </div>
-        <div style={blogStyle}>
-          {blog.likes} <button onClick={updateBlog}>like</button>
-        </div>
-        {blog.user && (
-          <div>
-            <div style={blogStyle}>
-              {blog.user.username} {blog.user.name}
-            </div>
-            {user && user.username === blog.user.username && (
-              <button style={buttonStyleRemove} onClick={handleRemove}>
-                remove
-              </button>
-            )}
+        <div style={hideWhenVisible}>
+          <div style={blogStyle}>
+            {blog.url} <button onClick={toggleVisibility}>hide</button>
           </div>
-        )}
+          <div style={blogStyle}>
+            {blog.likes} <button onClick={updateBlog}>like</button>
+          </div>
+          {blog.user && (
+            <div>
+              <div style={blogStyle}>
+                {blog.user.username} {blog.user.name}
+              </div>
+              {user && user.username === blog.user.username && (
+                <button style={buttonStyleRemove} onClick={handleRemove}>
+                  remove
+                </button>
+              )}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
-  );
-};
+    </li>
+  )
+}
 
-export default Blog;
+export default Blog
