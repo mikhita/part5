@@ -23,7 +23,7 @@ test('clicking the view button shows blog URL and likes', async () => {
     title: 'mikhita',
     author: 'Mikhita',
     url: 'mikhita.com',
-    likes: 87
+    likes: 89
   }
 
   render(
@@ -37,4 +37,29 @@ test('clicking the view button shows blog URL and likes', async () => {
   expect(screen.getByText(blog.url)).toBeInTheDocument()
   expect(screen.getByText(`${blog.likes}`)).toBeInTheDocument()
 })
+
+test('clicking the like button twice calls the event handler twice', async () => {
+  const blog = {
+    title: 'Test Blog',
+    author: 'Test Author',
+    url: 'https://testblog.com',
+    likes: 0
+  }
+
+  const mockHandler = jest.fn()
+
+  render(
+    <Blog blog={blog} updateBlog={mockHandler} />
+  )
+
+  const button = screen.getByText('like')
+  await userEvent.click(button)
+  await userEvent.click(button)
+
+  expect(mockHandler).toHaveBeenCalledTimes(0)
+})
+
+
+
+
 
