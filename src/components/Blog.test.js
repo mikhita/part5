@@ -38,7 +38,8 @@ test('clicking the view button shows blog URL and likes', async () => {
   expect(screen.getByText(`${blog.likes}`)).toBeInTheDocument()
 })
 
-test('clicking the like button twice calls the event handler twice', async () => {
+test('clicking the like button twice increases likes by 2', async () => {
+
   const blog = {
     title: 'Test Blog',
     author: 'Test Author',
@@ -52,12 +53,18 @@ test('clicking the like button twice calls the event handler twice', async () =>
     <Blog blog={blog} updateBlog={mockHandler} />
   )
 
+  const user = userEvent.setup()
   const button = screen.getByText('like')
-  await userEvent.click(button)
-  await userEvent.click(button)
+  await user.click(button)
+  await user.click(button)
 
-  expect(mockHandler).toHaveBeenCalledTimes(0)
+  expect(mockHandler.mock.calls).toHaveLength(2)
 })
+
+
+
+
+
 
 
 

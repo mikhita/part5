@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
@@ -10,7 +10,7 @@ const App = () => {
   const [errorMessageRed, setErrorMessageRed] = useState(null)
   const [user, setUser] = useState(null)
 
-
+  const blogFormRef = useRef()
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
@@ -33,7 +33,25 @@ const App = () => {
     setUser(null)
   }
 
-
+  const updateBlog = (blog) => {
+    console.log('Sending request to:', window.location.href + '/api/blogs/' + blog.id)
+    const updatedBlog = { ...blog, likes: blog.likes + 1 }
+    console.log('Updated blog:', updatedBlog)
+    blogService
+      .update(blog.id, updatedBlog, { populate: true })
+      .then((returnedBlog) => {
+        console.log('Returned blog:', returnedBlog)
+        console.log('Returned blog:', returnedBlog.likes)
+        setBlogs((prevBlogs) =>
+          prevBlogs.map((prevBlog) =>
+            prevBlog.id !== returnedBlog.id ? prevBlog : returnedBlog
+          )
+        )
+      })
+      .catch((error) => {
+        console.log('Error updating blog:', error)
+      })
+  }
 
   if (user === null) {
     return (
@@ -49,6 +67,16 @@ const App = () => {
       </div>
     )
   }
+
+
+  const addBlog = (blogObject) => {
+    blogService
+      .create(blogObject)
+      .then(returnedBlog => {
+        blogFormRef.current.toggleVisibility()
+        setBlogs(blogs.concat(returnedBlog))
+      })
+  }
   const sortedByLikes = [...blogs].sort((b, a) => a.likes - b.likes)
   console.log(sortedByLikes)
 
@@ -57,15 +85,14 @@ const App = () => {
       <h2>blogs</h2>
       <ul>
         {sortedByLikes.map(blog =>
-          <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} user={blog.user}/>
+          <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} user={blog.user} updateBlog={updateBlog}/>
         )}
       </ul>
       {user && <div>
         <p>{user.name} logged in<button onClick={handleLogout}>logout</button></p>
-        <BlogForm
-          blogs={blogs}
-          setBlogs={setBlogs}
-        />
+        <Togglable buttonLabel="new blog" ref={blogFormRef}>
+          <BlogForm createBlog={addBlog} />
+        </Togglable>
       </div>
       }
 

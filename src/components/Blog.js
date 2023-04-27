@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, blogs, setBlogs, user }) => {
+const Blog = ({ blog, blogs, setBlogs, user, updateBlog }) => {
   const [visible, setVisible] = useState(true)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
@@ -12,26 +12,27 @@ const Blog = ({ blog, blogs, setBlogs, user }) => {
     setVisible(false)
   }
 
-  const updateBlog = () => {
-    console.log('Sending request to:', window.location.href + '/api/blogs/' + blog.id)
-    const updatedBlog = { ...blog, likes: blog.likes + 1 }
-    console.log(updatedBlog)
-    blogService
-      .update(blog.id, updatedBlog, { populate: true })
-      .then((returnedBlog) => {
-        console.log('Returned blog:', returnedBlog)
-        if (blogs) {
-          setBlogs(
-            blogs.map((blog) =>
-              blog.id !== returnedBlog.id ? blog : returnedBlog
-            )
-          )
-        }
-      })
-      .catch((error) => {
-        console.log('Error updating blog:', error)
-      })
-  }
+  // const updateBlog = () => {
+  //   console.log('Sending request to:', window.location.href + '/api/blogs/' + blog.id)
+  //   const updatedBlog = { ...blog, likes: blog.likes + 1 }
+  //   console.log('Updated blog:', updatedBlog)
+  //   blogService
+  //     .update(blog.id, updatedBlog, { populate: true })
+  //     .then((returnedBlog) => {
+  //       console.log('Returned blog:', returnedBlog)
+  //       console.log('Returned blog:', returnedBlog.likes)
+  //       if (blogs) {
+  //         setBlogs(
+  //           blogs.map((blog) =>
+  //             blog.id !== returnedBlog.id ? blog : returnedBlog
+  //           )
+  //         )
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log('Error updating blog:', error)
+  //     })
+  // }
 
   const handleRemove = async () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
@@ -67,7 +68,7 @@ const Blog = ({ blog, blogs, setBlogs, user }) => {
             {blog.url} <button onClick={toggleVisibility}>hide</button>
           </div>
           <div style={blogStyle}>
-            {blog.likes} <button onClick={updateBlog}>like</button>
+            {blog.likes} <button onClick={() => updateBlog(blog)}>like</button>
           </div>
           {blog.user && (
             <div>
