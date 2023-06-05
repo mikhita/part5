@@ -1,5 +1,12 @@
 describe('Blog app', () => {
   beforeEach(function(){
+    cy.request('POST', 'http://localhost:3005/api/testing/reset')
+    const user = {
+      name: 'Misha Ghandi',
+      username: 'mikhita2',
+      password: 'mikhita2'
+    }
+    cy.request('POST', 'http://localhost:3005/api/users/', user)
     cy.visit('http://localhost:3000')
   })
 
@@ -18,11 +25,11 @@ describe('Blog app', () => {
 
     it('succeeds with correct credentials', function() {
       cy.contains('log in').click()
-      cy.get('#username').type('mikhita')
-      cy.get('#password').type('mikhita')
+      cy.get('#username').type('mikhita2')
+      cy.get('#password').type('mikhita2')
       cy.get('#login-button').click()
 
-      cy.contains('Mikhita logged in')
+      cy.contains('Misha Ghandi logged in')
 
       cy.wait(1000) // Wait for 1 second
       cy.contains('new blog').click()
@@ -31,6 +38,12 @@ describe('Blog app', () => {
       cy.get('#url').type('url created by cypress')
       cy.contains('create').click()
       cy.contains('a blogTitle created by cypress')
+
+      cy.contains('view').click()
+      cy.contains('like').click()
+      cy.get('.likes').should('have.text', '1 like')
+
+
     })
 
     // it('fails with wrong credentials', function() {
