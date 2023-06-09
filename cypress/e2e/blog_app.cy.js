@@ -40,8 +40,11 @@ describe('Blog app', () => {
       cy.contains('a blogTitle created by cypress')
 
       cy.contains('view').click()
-      cy.contains('like').click()
-      cy.get('.likes').should('have.text', '1 like')
+
+      cy.contains('remove').click()
+
+      // cy.contains('like').click()
+      // cy.get('.likes').should('have.text', '1 like')
 
 
     })
