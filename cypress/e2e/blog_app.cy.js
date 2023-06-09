@@ -28,20 +28,47 @@ describe('Blog app', () => {
       cy.get('#username').type('mikhita2')
       cy.get('#password').type('mikhita2')
       cy.get('#login-button').click()
-
       cy.contains('Misha Ghandi logged in')
 
       cy.wait(1000) // Wait for 1 second
+      // Log in as the blog creator
+      // cy.login('mikhita2', 'mikhita2')
+
+      // Click on the 'New Blog' button
       cy.contains('new blog').click()
+
+      // Enter a title, author, and URL for the blog
       cy.get('#title').type('a blogTitle created by cypress')
       cy.get('#author').type('author created by cypress')
       cy.get('#url').type('url created by cypress')
+
+      // Click on the 'Create' button
       cy.contains('create').click()
+
+      // Verify that the blog is created and that the delete button is visible
+      cy.contains('view').click()
       cy.contains('a blogTitle created by cypress')
 
-      cy.contains('view').click()
 
-      cy.contains('remove').click()
+
+      // cy.contains('log in').click()
+      // cy.get('#username').type('mikhita2')
+      // cy.get('#password').type('mikhita2')
+      // cy.get('#login-button').click()
+
+      // cy.contains('Misha Ghandi logged in')
+
+      // cy.wait(1000) // Wait for 1 second
+      // cy.contains('new blog').click()
+      // cy.get('#title').type('a blogTitle created by cypress')
+      // cy.get('#author').type('author created by cypress')
+      // cy.get('#url').type('url created by cypress')
+      // cy.contains('create').click()
+      // cy.contains('a blogTitle created by cypress')
+
+      // cy.contains('view').click()
+
+      // cy.contains('remove').click()
 
       // cy.contains('like').click()
       // cy.get('.likes').should('have.text', '1 like')
